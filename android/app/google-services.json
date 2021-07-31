@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "814489870312",
+    "project_id": "bm-elektronik",
+    "storage_bucket": "bm-elektronik.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814489870312:android:22d9f1055ae44ed3120e5d",
+        "android_client_info": {
+          "package_name": "com.bmelektronik"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "814489870312-f56asru8gg6i0107rkci2kfubqiv2hfi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbhWslx59aQs3RlzIjWMYkgB6SIzZULBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "814489870312-f56asru8gg6i0107rkci2kfubqiv2hfi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
