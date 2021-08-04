@@ -50,7 +50,7 @@ const MainApp = () => {
   return (
     <Tab.Navigator tabBar={props => <BottomNavigator {...props} />}>
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Transaksi" component={ListData} />
+      <Tab.Screen name="Kategori" component={Kategori} />
       <Tab.Screen name="Cart" component={Cart} />
       <Tab.Screen name="Wistlist" component={Wishlist} />
       {/* <Tab.Screen name="Cart" component={Cart} /> */}

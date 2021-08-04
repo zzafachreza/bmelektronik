@@ -16,7 +16,7 @@ import 'intl/locale-data/jsonp/en';
 import {colors} from '../../utils/colors';
 import {fonts, windowWidth} from '../../utils/fonts';
 
-export default function MyProductDiscount() {
+export default function MyProductNew() {
   useEffect(() => {
     axios.get('https://zavalabs.com/bmelektronik/api/barang.php').then(res => {
       console.log('barang diskon', res.data);
@@ -148,7 +148,7 @@ export default function MyProductDiscount() {
               left: 10,
               fontSize: windowWidth / 20,
             }}>
-            PRODUK DISKON
+            PRODUK TERBARU
           </Text>
 
           <Text

@@ -97,14 +97,14 @@ export default function MyCarouser() {
         }}>
         <Text
           style={{
-            fontFamily: fonts.secondary[600],
-            fontSize: windowWidth / 20,
+            fontFamily: fonts.request[100],
+            fontSize: windowWidth / 15,
             color: colors.white,
           }}>
           BM ELEKTRONIK
         </Text>
       </View>
-      <Carousel
+      {/* <Carousel
         // layout="stack"
         layoutCardOffset={18}
         data={data}
@@ -118,7 +118,7 @@ export default function MyCarouser() {
         onSnapToItem={index => setActiveSlide(index)}
         activeAnimationType="timing"
         loop={true}
-      />
+      /> */}
     </View>
   );
 }

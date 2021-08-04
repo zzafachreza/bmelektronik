@@ -198,7 +198,7 @@ export default function Barang({navigation, route}) {
         }
         withHandle={false}
         ref={modalizeRef}>
-        <View style={{flex: 1, height: 230}}>
+        <View style={{flex: 1, height: 330}}>
           <View style={{padding: 10, flex: 1}}>
             <View style={{flexDirection: 'row', marginTop: 20}}>
               <View style={{flex: 1}}>

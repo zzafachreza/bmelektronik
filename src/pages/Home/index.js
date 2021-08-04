@@ -22,7 +22,7 @@ import axios from 'axios';
 import messaging from '@react-native-firebase/messaging';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
-import MyTerbaik2 from '../../components/MyTerbaik2';
+import MyProductNew from '../../components/MyProductNew';
 import MyProductDiscount from '../../components/MyProductDiscount';
 
 export default function Home({navigation}) {
@@ -257,6 +257,7 @@ export default function Home({navigation}) {
 
         <MyCarouser />
         <MyProductDiscount />
+        <MyProductNew />
 
         {/* <MyKategori /> */}
         {/* <MyTerbaik /> */}

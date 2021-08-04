@@ -58,8 +58,8 @@ export default function BottomNavigator({state, descriptors, navigation}) {
           iconName = 'person-outline';
         } else if (label === 'Transaksi') {
           iconName = 'grid-outline';
-        } else if (label === 'ListRedeem') {
-          iconName = 'bookmarks-outline';
+        } else if (label === 'Kategori') {
+          iconName = 'grid-outline';
         } else if (label === 'Cart') {
           iconName = 'cart-outline';
           // iconType = 'simplelineicons';

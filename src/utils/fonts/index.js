@@ -25,4 +25,8 @@ export const fonts = {
     900: 'Montserrat-Black',
     normal: 'Montserrat-Regular',
   },
+  request: {
+    100: 'Bauhaus',
+    200: 'Bauhaus-Bold',
+  },
 };
