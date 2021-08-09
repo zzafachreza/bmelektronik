@@ -15,14 +15,45 @@ import 'intl';
 import 'intl/locale-data/jsonp/en';
 import {colors} from '../../utils/colors';
 import {fonts, windowWidth} from '../../utils/fonts';
+import {getData} from '../../utils/localStorage';
+import {showMessage} from 'react-native-flash-message';
 
 export default function MyProductDiscount() {
+  const [user, setUser] = useState({});
+
   useEffect(() => {
+    getData('user').then(res => {
+      setUser(res);
+    });
+
     axios.get('https://zavalabs.com/bmelektronik/api/barang.php').then(res => {
       console.log('barang diskon', res.data);
       setData(res.data);
     });
   }, []);
+
+  const addFav = item => {
+    const kirim = {
+      id_member: user.id,
+      id_barang: item.id,
+      nama_barang: item.nama_barang,
+      qty: 1,
+      uom: item.uom,
+      harga: item.harga,
+      total: item.harga,
+      foto: item.foto,
+    };
+    console.log('kirim ke server', kirim);
+    axios
+      .post('https://zavalabs.com/bmelektronik/api/fav_add.php', kirim)
+      .then(res => {
+        console.log(res);
+        showMessage({
+          type: 'success',
+          message: 'Berhasil Di Favoritkan',
+        });
+      });
+  };
 
   const navigation = useNavigation();
   const [data, setData] = useState([]);
@@ -39,6 +70,21 @@ export default function MyProductDiscount() {
             uri: item.foto,
           }}
         />
+        <TouchableOpacity
+          onPress={() => addFav(item)}
+          style={{
+            flex: 1,
+            justifyContent: 'flex-end',
+            alignItems: 'flex-end',
+            padding: 10,
+          }}>
+          <Icon
+            type="ionicon"
+            name="heart"
+            size={windowWidth / 15}
+            color={colors.primary}
+          />
+        </TouchableOpacity>
         <View
           style={{
             flexDirection: 'column',

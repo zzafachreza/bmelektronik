@@ -27,6 +27,7 @@ import Hadiah from './Hadiah';
 import Redeem from './Redeem';
 import ListRedeem from './ListRedeem';
 import Wishlist from './Wishlist';
+import EditProfile from './EditProfile';
 export {
   Wishlist,
   Splash,
@@ -57,4 +58,5 @@ export {
   Hadiah,
   Redeem,
   ListRedeem,
+  EditProfile,
 };
