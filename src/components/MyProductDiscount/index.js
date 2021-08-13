@@ -26,10 +26,12 @@ export default function MyProductDiscount() {
       setUser(res);
     });
 
-    axios.get('https://zavalabs.com/bmelektronik/api/barang.php').then(res => {
-      console.log('barang diskon', res.data);
-      setData(res.data);
-    });
+    axios
+      .get('https://zavalabs.com/bmelektronik/api/barang_diskon.php')
+      .then(res => {
+        console.log('barang diskon', res.data);
+        setData(res.data);
+      });
   }, []);
 
   const addFav = item => {
@@ -70,21 +72,23 @@ export default function MyProductDiscount() {
             uri: item.foto,
           }}
         />
-        <TouchableOpacity
-          onPress={() => addFav(item)}
+        <View
           style={{
-            flex: 1,
+            // flex: 1,
             justifyContent: 'flex-end',
             alignItems: 'flex-end',
             padding: 10,
+            // backgroundColor: 'blue',
           }}>
-          <Icon
-            type="ionicon"
-            name="heart"
-            size={windowWidth / 15}
-            color={colors.primary}
-          />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => addFav(item)}>
+            <Icon
+              type="ionicon"
+              name="heart"
+              size={windowWidth / 15}
+              color={colors.primary}
+            />
+          </TouchableOpacity>
+        </View>
         <View
           style={{
             flexDirection: 'column',
@@ -189,23 +193,25 @@ export default function MyProductDiscount() {
           <Text
             style={{
               flex: 1,
-              fontFamily: fonts.secondary[600],
+              fontFamily: fonts.secondary[400],
               color: colors.black,
               left: 10,
-              fontSize: windowWidth / 20,
+              fontSize: windowWidth / 12,
             }}>
             PRODUK DISKON
           </Text>
 
-          <Text
-            style={{
-              fontFamily: fonts.secondary[400],
-              color: colors.black,
+          <TouchableOpacity onPress={() => navigation.navigate('BarangDiskon')}>
+            <Text
+              style={{
+                fontFamily: fonts.secondary[400],
+                color: colors.black,
 
-              fontSize: windowWidth / 30,
-            }}>
-            Lihat Semua
-          </Text>
+                fontSize: windowWidth / 30,
+              }}>
+              Lihat Semua
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
       <View

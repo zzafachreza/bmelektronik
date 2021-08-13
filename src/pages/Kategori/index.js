@@ -14,7 +14,7 @@ import axios from 'axios';
 import {MyButton} from '../../components';
 import {colors} from '../../utils/colors';
 
-export default function Kategori() {
+export default function Kategori({navigation}) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -29,6 +29,7 @@ export default function Kategori() {
   const _renderITem = ({item}) => {
     return (
       <TouchableOpacity
+        onPress={() => navigation.navigate('Search2', item)}
         style={{
           flexDirection: 'row',
           padding: 10,

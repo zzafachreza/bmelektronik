@@ -28,10 +28,19 @@ import Redeem from './Redeem';
 import ListRedeem from './ListRedeem';
 import Wishlist from './Wishlist';
 import EditProfile from './EditProfile';
+import Alamat from './Alamat';
+import AlamatTambah from './AlamatTambah';
+import BarangDiskon from './BarangDiskon';
+import BarangNew from './BarangNew';
+import Metode from './Metode';
+import Kredit from './Kredit';
+
 export {
   Wishlist,
+  Kredit,
   Splash,
   GetStarted,
+  Metode,
   Register,
   Login,
   Home,
@@ -59,4 +68,8 @@ export {
   Redeem,
   ListRedeem,
   EditProfile,
+  Alamat,
+  AlamatTambah,
+  BarangDiskon,
+  BarangNew,
 };

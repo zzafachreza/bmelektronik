@@ -198,7 +198,7 @@ export default function Barang({navigation, route}) {
         }
         withHandle={false}
         ref={modalizeRef}>
-        <View style={{flex: 1, height: 330}}>
+        <View style={{flex: 1, height: windowWidth / 2}}>
           <View style={{padding: 10, flex: 1}}>
             <View style={{flexDirection: 'row', marginTop: 20}}>
               <View style={{flex: 1}}>
@@ -277,7 +277,6 @@ export default function Barang({navigation, route}) {
               warna={colors.primary}
               onPress={addToCart}
             /> */}
-
             <View style={{marginTop: 15}}>
               <TouchableOpacity
                 onPress={addToCart}

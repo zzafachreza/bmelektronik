@@ -4,16 +4,22 @@ import {windowWidth, fonts} from '../../utils/fonts';
 import {getData, storeData} from '../../utils/localStorage';
 import {colors} from '../../utils/colors';
 import {MyButton, MyGap} from '../../components';
+import {Icon} from 'react-native-elements';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function Account({navigation, route}) {
   const [user, setUser] = useState({});
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    getData('user').then(res => {
-      setUser(res);
-      // console.log(user);
-    });
-  }, []);
+    if (isFocused) {
+      getData('user').then(res => {
+        setUser(res);
+        // console.log(user);
+      });
+    }
+  }, [isFocused]);
 
   const btnKeluar = () => {
     storeData('user', null);
@@ -91,26 +97,33 @@ export default function Account({navigation, route}) {
                 {user.email}
               </Text>
             </View>
-            <View
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Alamat', user)}
               style={{
                 marginVertical: 5,
                 padding: 10,
                 borderRadius: 10,
                 backgroundColor: colors.white,
+                flexDirection: 'row',
               }}>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[600],
-                }}>
-                Alamat
-              </Text>
-              <Text
-                style={{
-                  fontFamily: fonts.secondary[400],
-                }}>
-                {user.alamat}
-              </Text>
-            </View>
+              <View style={{flex: 1}}>
+                <Text
+                  style={{
+                    fontFamily: fonts.secondary[600],
+                  }}>
+                  Alamat
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: fonts.secondary[400],
+                  }}>
+                  {user.alamat}
+                </Text>
+              </View>
+              <View>
+                <Icon type="ionicon" name="chevron-forward-outline" />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 

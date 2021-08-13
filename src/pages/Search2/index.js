@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -20,30 +20,89 @@ import LottieView from 'lottie-react-native';
 import {fonts, windowWidth} from '../../utils/fonts';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
+import {Modalize} from 'react-native-modalize';
 
 export default function Search2({navigation, route}) {
+  const modalizeRef = useRef();
+
+  const onOpen = () => {
+    modalizeRef.current?.open();
+  };
+
   const item = route.params;
   console.log(route.params);
 
   navigation.setOptions({
-    title: item.nama,
+    title: item.nama_kategori,
   });
 
   const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState([]);
+  const [cat, setCat] = useState([]);
 
-  useEffect(() => {
+  const cariSub = (nama_sub, filter) => {
     axios
-      .post('https://zavalabs.com/bmelektronik/api/barang_cari.php', {
-        cari: item.nama,
+      .post('https://zavalabs.com/bmelektronik/api/barang_cari_key.php', {
+        cari: nama_sub,
+        filter: filter,
       })
       .then(res => {
         console.log(res.data);
         setData(res.data);
         // setData(res.data.data);
       });
+  };
+
+  const getFilter = (nama_kategori = item.nama_kategori, filter) => {
+    axios
+      .post('https://zavalabs.com/bmelektronik/api/barang_kategori.php', {
+        cari: nama_kategori,
+        filter: filter,
+      })
+      .then(res => {
+        console.log(filter);
+        console.log(res.data);
+        setData(res.data);
+      });
+  };
+
+  useEffect(() => {
+    getFilter(item.nama_kategori, filter);
+
+    axios
+      .post('https://zavalabs.com/bmelektronik/api/sub_kategori.php', {
+        cari: item.nama_kategori,
+      })
+      .then(res => {
+        console.log('subkategori', res.data);
+        setCat(res.data);
+        // setData(res.data.data);
+      });
   }, []);
+
+  const [filter, setFilter] = useState('Harga: Rendah ke Tinggi');
+
+  const renderItemSubKategori = ({item}) => {
+    return (
+      <TouchableOpacity
+        onPress={() => cariSub(item.nama_sub_kategori)}
+        style={{
+          backgroundColor: colors.black,
+          margin: 10,
+          paddingVertical: 10,
+          paddingHorizontal: 20,
+          borderRadius: 20,
+        }}>
+        <Text
+          style={{
+            color: colors.white,
+          }}>
+          {item.nama_sub_kategori}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   const renderItem = ({item}) => {
     return (
@@ -141,12 +200,64 @@ export default function Search2({navigation, route}) {
 
   return (
     <>
+      <View
+        style={{
+          padding: 10,
+          backgroundColor: colors.white,
+        }}>
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item.id}
+          data={cat}
+          renderItem={renderItemSubKategori}
+        />
+        <TouchableOpacity
+          onPress={onOpen}
+          style={{
+            flexDirection: 'row',
+            padding: 10,
+          }}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+
+              alignItems: 'center',
+            }}>
+            <Icon type="ionicon" name="filter-outline" />
+            <Text style={{left: 10, fontFamily: fonts.secondary[400]}}>
+              Filters
+            </Text>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Icon type="ionicon" name="funnel-outline" />
+            <Text style={{left: 10, fontFamily: fonts.secondary[400]}}>
+              {filter}
+            </Text>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+            }}>
+            <Icon type="ionicon" name="list" />
+          </View>
+        </TouchableOpacity>
+      </View>
       <ScrollView
         style={{
           flex: 1,
           padding: 10,
         }}>
-        {/* <Text>{key}</Text> */}
         <FlatList
           numColumns={2}
           data={data}
@@ -154,6 +265,104 @@ export default function Search2({navigation, route}) {
           keyExtractor={item => item.id}
         />
       </ScrollView>
+
+      <Modalize
+        withHandle={true}
+        scrollViewProps={{showsVerticalScrollIndicator: false}}
+        snapPoint={300}
+        HeaderComponent={
+          <View style={{padding: 10}}>
+            <View style={{flexDirection: 'row'}}>
+              <View
+                style={{
+                  flex: 1,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: fonts.secondary[400],
+                    fontSize: windowWidth / 12,
+                  }}>
+                  Sortir Dengan :{' '}
+                </Text>
+              </View>
+              <TouchableOpacity onPress={() => modalizeRef.current.close()}>
+                <Icon type="ionicon" name="close-outline" size={35} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        }
+        withHandle={false}
+        ref={modalizeRef}>
+        <View style={{flex: 1, height: 330}}>
+          <View style={{marginTop: 15}}>
+            <TouchableOpacity
+              onPress={() => {
+                setFilter('Diskon');
+
+                getFilter(item.nama_kategori, 'Diskon');
+
+                modalizeRef.current.close();
+              }}
+              style={{padding: 10, marginBottom: 5}}>
+              <Text
+                style={{
+                  fontFamily: fonts.secondary[400],
+                  fontSize: windowWidth / 15,
+                }}>
+                Diskon
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setFilter('Terbaru');
+
+                getFilter(item.nama_kategori, 'Terbaru');
+
+                modalizeRef.current.close();
+              }}
+              style={{padding: 10, marginBottom: 5}}>
+              <Text
+                style={{
+                  fontFamily: fonts.secondary[400],
+                  fontSize: windowWidth / 15,
+                }}>
+                Terbaru
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setFilter('Harga: Rendah ke Tinggi');
+                getFilter(item.nama_kategori, 'Harga: Rendah ke Tinggi');
+                modalizeRef.current.close();
+              }}
+              style={{padding: 10, marginBottom: 5}}>
+              <Text
+                style={{
+                  fontFamily: fonts.secondary[400],
+                  fontSize: windowWidth / 15,
+                }}>
+                Harga: Rendah ke Tinggi
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setFilter('Harga: Tinggi ke Rendah');
+                getFilter(item.nama_kategori, 'Harga: Tinggi ke Rendah');
+                modalizeRef.current.close();
+              }}
+              style={{padding: 10, marginBottom: 5}}>
+              <Text
+                style={{
+                  fontFamily: fonts.secondary[400],
+                  fontSize: windowWidth / 15,
+                }}>
+                Harga: Tinggi ke Rendah
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modalize>
+
       {loading && (
         <LottieView
           source={require('../../assets/animation.json')}

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -21,12 +21,22 @@ import {fonts, windowWidth} from '../../utils/fonts';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 
-export default function Search({navigation, route}) {
+export default function BarangDiskon({navigation, route}) {
   const [key, setKey] = useState('');
   const [cari, setCari] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .post('https://zavalabs.com/bmelektronik/api/barang_diskon.php')
+      .then(res => {
+        console.log('hasil cari', res.data);
+        setData(res.data);
+        // setData(res.data.data);
+      });
+  }, []);
 
   const renderItem = ({item}) => {
     return (
@@ -122,27 +132,6 @@ export default function Search({navigation, route}) {
     );
   };
 
-  const pencarian = () => {
-    setLoading(true);
-    console.log(
-      'lik',
-      'https://zavalabs.com/bmelektronik/api/barang_cari_key.php',
-    );
-    setTimeout(() => {
-      setCari(true);
-      axios
-        .post('https://zavalabs.com/bmelektronik/api/barang_cari_key.php', {
-          cari: key,
-        })
-        .then(res => {
-          console.log('hasil cari', res.data);
-          setData(res.data);
-          // setData(res.data.data);
-        });
-      setLoading(false);
-    }, 500);
-  };
-
   return (
     <>
       <ScrollView
@@ -151,91 +140,17 @@ export default function Search({navigation, route}) {
         }}>
         <View
           style={{
-            // flex: 1,
-            backgroundColor: colors.primary,
-            height: 70,
-            flexDirection: 'row',
-
+            flex: 1,
             padding: 10,
+            backgroundColor: '#FFF',
           }}>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-            }}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={{
-                padding: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Icon type="ionicon" name="arrow-back" color="#FFF" size={25} />
-            </TouchableOpacity>
-            <View
-              style={{
-                flex: 1,
-              }}>
-              <TextInput
-                value={key}
-                onSubmitEditing={pencarian}
-                onChangeText={value => setKey(value)}
-                selectionColor={'#FFF'}
-                autoCapitalize="none"
-                autoFocus
-                style={{
-                  paddingLeft: 20,
-                  borderWidth: 1,
-                  height: 45,
-                  borderRadius: 10,
-                  borderColor: '#FFF',
-                  color: '#FFF',
-                  flexDirection: 'row',
-                  fontSize: 18,
-                  justifyContent: 'center',
-                }}
-              />
-            </View>
-          </View>
+          <FlatList
+            numColumns={2}
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+          />
         </View>
-        {cari && (
-          <View
-            style={{
-              flex: 1,
-              padding: 10,
-              backgroundColor: '#FFF',
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                // justifyContent: 'center',
-                alignItems: 'center',
-                paddingVertical: 5,
-              }}>
-              <Icon
-                type="ionicon"
-                name="search"
-                color={colors.primary}
-                size={16}
-              />
-              <Text
-                style={{
-                  fontFamily: 'Montserrat-SemiBold',
-                  color: colors.primary,
-                  left: 10,
-                  fontSize: 16,
-                }}>
-                Kata Kunci "{key}"
-              </Text>
-            </View>
-            <FlatList
-              numColumns={2}
-              data={data}
-              renderItem={renderItem}
-              keyExtractor={item => item.id}
-            />
-          </View>
-        )}
       </ScrollView>
       {loading && (
         <LottieView

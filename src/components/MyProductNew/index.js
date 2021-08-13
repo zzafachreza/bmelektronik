@@ -15,14 +15,47 @@ import 'intl';
 import 'intl/locale-data/jsonp/en';
 import {colors} from '../../utils/colors';
 import {fonts, windowWidth} from '../../utils/fonts';
+import {getData} from '../../utils/localStorage';
+import {showMessage} from 'react-native-flash-message';
 
 export default function MyProductNew() {
+  const [user, setUser] = useState({});
+
   useEffect(() => {
-    axios.get('https://zavalabs.com/bmelektronik/api/barang.php').then(res => {
-      console.log('barang diskon', res.data);
-      setData(res.data);
+    getData('user').then(res => {
+      setUser(res);
     });
+
+    axios
+      .get('https://zavalabs.com/bmelektronik/api/barang_baru.php')
+      .then(res => {
+        console.log('barang diskon', res.data);
+        setData(res.data);
+      });
   }, []);
+
+  const addFav = item => {
+    const kirim = {
+      id_member: user.id,
+      id_barang: item.id,
+      nama_barang: item.nama_barang,
+      qty: 1,
+      uom: item.uom,
+      harga: item.harga,
+      total: item.harga,
+      foto: item.foto,
+    };
+    console.log('kirim ke server', kirim);
+    axios
+      .post('https://zavalabs.com/bmelektronik/api/fav_add.php', kirim)
+      .then(res => {
+        console.log(res);
+        showMessage({
+          type: 'success',
+          message: 'Berhasil Di Favoritkan',
+        });
+      });
+  };
 
   const navigation = useNavigation();
   const [data, setData] = useState([]);
@@ -39,6 +72,23 @@ export default function MyProductNew() {
             uri: item.foto,
           }}
         />
+        <View
+          style={{
+            // flex: 1,
+            justifyContent: 'flex-end',
+            alignItems: 'flex-end',
+            padding: 10,
+            // backgroundColor: 'blue',
+          }}>
+          <TouchableOpacity onPress={() => addFav(item)}>
+            <Icon
+              type="ionicon"
+              name="heart"
+              size={windowWidth / 15}
+              color={colors.primary}
+            />
+          </TouchableOpacity>
+        </View>
         <View
           style={{
             flexDirection: 'column',
@@ -143,23 +193,24 @@ export default function MyProductNew() {
           <Text
             style={{
               flex: 1,
-              fontFamily: fonts.secondary[600],
+              fontFamily: fonts.secondary[400],
               color: colors.black,
               left: 10,
-              fontSize: windowWidth / 20,
+              fontSize: windowWidth / 12,
             }}>
             PRODUK TERBARU
           </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('BarangNew')}>
+            <Text
+              style={{
+                fontFamily: fonts.secondary[400],
+                color: colors.black,
 
-          <Text
-            style={{
-              fontFamily: fonts.secondary[400],
-              color: colors.black,
-
-              fontSize: windowWidth / 30,
-            }}>
-            Lihat Semua
-          </Text>
+                fontSize: windowWidth / 30,
+              }}>
+              Lihat Semua
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
       <View
