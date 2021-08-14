@@ -12,7 +12,7 @@ import {
 import {colors} from '../../utils/colors';
 import {fonts} from '../../utils/fonts';
 import {color} from 'react-native-reanimated';
-import {getData} from '../../utils/localStorage';
+import {getData, storeData} from '../../utils/localStorage';
 import {PermissionsAndroid} from 'react-native';
 import LottieView from 'lottie-react-native';
 

@@ -31,9 +31,7 @@ export default function Bayar({navigation, route}) {
   console.log('data dari bayar', data);
   const [loading, setLoading] = useState(false);
   console.log('pembayaran', data);
-  const [foto1, setfoto1] = useState(
-    'https://ayokulakan.com/img/no-images.png',
-  );
+  const [foto1, setfoto1] = useState('https://zavalabs.com/nogambar.jpg');
 
   const options = {
     includeBase64: true,
@@ -137,7 +135,7 @@ export default function Bayar({navigation, route}) {
             <MyButton
               onPress={onPress2}
               title="GALLERY"
-              warna={colors.secondary}
+              warna={colors.warning}
             />
           </View>
         </View>
@@ -155,12 +153,7 @@ export default function Bayar({navigation, route}) {
           console.log(res);
           setLoading(false);
         });
-
-      navigation.replace('MainApp');
-      showMessage({
-        type: 'success',
-        message: 'Transaksi Berhasil, Terima kasih',
-      });
+      navigation.navigate('Success2');
     }, 1200);
   };
   return (
@@ -240,7 +233,7 @@ export default function Bayar({navigation, route}) {
                 fontFamily: fonts.secondary[600],
                 padding: 10,
               }}>
-              wandhaelektronik
+              BM Elektronik
             </Text>
           </View>
           <View
@@ -266,7 +259,10 @@ export default function Bayar({navigation, route}) {
                 fontFamily: fonts.secondary[600],
                 padding: 10,
               }}>
-              Rp. {new Intl.NumberFormat().format(route.params.total)}
+              Rp.{' '}
+              {new Intl.NumberFormat().format(
+                route.params.total + route.params.ongkir,
+              )}
             </Text>
           </View>
 

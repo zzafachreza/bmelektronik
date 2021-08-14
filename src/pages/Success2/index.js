@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Dimensions,
   Animated,
+  Image,
 } from 'react-native';
 import {fonts} from '../../utils/fonts';
 import LottieView from 'lottie-react-native';
@@ -23,11 +24,6 @@ export default function Success2({navigation, route}) {
     useNativeDriver: false,
   }).start();
 
-  setTimeout(() => {
-    navigation.replace('MainApp');
-  }, 1300);
-
-  const messege = route.params.messege;
   return (
     <SafeAreaView
       style={{
@@ -36,24 +32,38 @@ export default function Success2({navigation, route}) {
       <View
         style={{
           flex: 1,
-          justifyContent: 'flex-end',
+          justifyContent: 'center',
           alignItems: 'center',
           paddingBottom: 100,
         }}>
-        <LottieView
-          source={require('../../assets/success.json')}
-          autoPlay
-          loop={false}
+        <Image
+          source={require('../../assets/bags.png')}
+          style={{marginBottom: 20}}
         />
-        <Animated.Text
+        <Text
           style={{
             fontFamily: fonts.secondary[400],
-            fontSize: windowWidth / 22,
+            fontSize: windowWidth / 10,
             color: 'black',
-            bottom: txt,
           }}>
-          Redeem Point Berhasil
-        </Animated.Text>
+          Berhasil!
+        </Text>
+        <Text
+          style={{
+            fontFamily: fonts.secondary[400],
+            fontSize: windowWidth / 25,
+            textAlign: 'center',
+          }}>
+          Pesanan Anda akan segera dikirimkan. Terima kasih telah memilih
+          aplikasi kami!
+        </Text>
+      </View>
+      <View style={{padding: 10}}>
+        <MyButton
+          onPress={() => navigation.replace('MainApp')}
+          title="LANJUTKAN BELANJA!"
+          warna={colors.primary}
+        />
       </View>
     </SafeAreaView>
   );

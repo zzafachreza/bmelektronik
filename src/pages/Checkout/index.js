@@ -33,40 +33,44 @@ export default function Checkout({navigation, route}) {
   const [kirim, setKirim] = useState(item);
 
   const simpan = () => {
-    setLoading(true);
-    console.log('kirim ke server', item);
-    setTimeout(() => {
+    // setLoading(true);
+    console.log('kirim ke server', kirim);
+    navigation.navigate('Bayar', kirim);
+
+    if (user.bayar === 'KREDIT') {
       axios
-        .post('https://zavalabs.com/bmelektronik/api/transaksi_add.php', item)
+        .post('https://zavalabs.com/bmelektronik/api/transaksi_add.php', kirim)
         .then(res => {
           console.log(res);
           setLoading(false);
         });
-
-      navigation.replace('MainApp');
-      showMessage({
-        type: 'success',
-        message: 'Transaksi Berhasil, Terima kasih',
-      });
-    }, 1200);
+      navigation.replace('Success2');
+    } else {
+      navigation.navigate('Bayar', kirim);
+    }
   };
 
   const getUser = () => {
     getData('user').then(res => {
       setUser(res);
+      setKirim({
+        ...kirim,
+        ongkir: 15000,
+        bayar: res.bayar,
+        tenor: tenor,
+      });
     });
   };
 
   useEffect(() => {
-    setKirim({
-      ...kirim,
-      ongkir: 15000,
-    });
-
     if (isFocused) {
       getUser();
     }
   }, [isFocused]);
+
+  const [tenor, setTenor] = useState(10);
+  const [cicilan1, setCicilan1] = useState(true);
+  const [cicilan2, setCicilan2] = useState(false);
 
   return (
     <>
@@ -148,7 +152,7 @@ export default function Checkout({navigation, route}) {
               fontSize: windowWidth / 22,
               fontFamily: fonts.secondary[400],
             }}>
-            Transfer Bank - BNI
+            {user.bayar}
           </Text>
           <View
             style={{
@@ -160,11 +164,92 @@ export default function Checkout({navigation, route}) {
             }}>
             <View style={{flexDirection: 'row'}}>
               <View style={{flex: 1}}>
-                <Image
-                  source={require('../../assets/bni.png')}
-                  style={{height: 100, width: 200}}
-                  resizeMode="center"
-                />
+                {user.bayar == 'KREDIT' ? (
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setCicilan1(true);
+                        setCicilan2(false);
+                        setKirim({...kirim, tenor: 10});
+                        // console.log(
+                        //   '10 bulan',
+                        //   kirim.total + ((30 / 100) * kirim.total) / 10,
+                        // );
+                      }}
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        padding: 10,
+                        marginVertical: 5,
+                        width: '70%',
+                        borderRadius: 10,
+                        backgroundColor: cicilan1
+                          ? colors.primary
+                          : colors.white,
+                      }}>
+                      <Icon
+                        type="ionicon"
+                        name="card-outline"
+                        color={cicilan1 ? colors.white : colors.black}
+                        // size={windowWidth / 4}
+                      />
+                      <Text
+                        style={{
+                          color: cicilan1 ? colors.white : colors.black,
+                          left: 10,
+                          fontSize: windowWidth / 22,
+                          fontFamily: fonts.secondary[400],
+                        }}>
+                        Cicilan 10 Bulan
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setCicilan2(true);
+                        setCicilan1(false);
+                        setKirim({...kirim, tenor: 12});
+
+                        // setKirim({
+                        //   ...kirim,
+                        //   total:
+                        //     kirim.subTotal + ((36 / 100) * kirim.subTotal) / 12,
+                        // });
+                      }}
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        padding: 10,
+                        marginVertical: 5,
+                        borderRadius: 10,
+                        width: '70%',
+                        backgroundColor: cicilan2
+                          ? colors.primary
+                          : colors.white,
+                      }}>
+                      <Icon
+                        type="ionicon"
+                        name="card-outline"
+                        color={cicilan2 ? colors.white : colors.black}
+                        // size={windowWidth / 4}
+                      />
+                      <Text
+                        style={{
+                          color: cicilan2 ? colors.white : colors.black,
+                          left: 10,
+                          fontSize: windowWidth / 22,
+                          fontFamily: fonts.secondary[400],
+                        }}>
+                        Cicilan 12 Bulan
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <Image
+                    source={{uri: user.foto_bank}}
+                    style={{height: 100, width: 200}}
+                    resizeMode="center"
+                  />
+                )}
               </View>
               <TouchableOpacity
                 onPress={() => navigation.navigate('Metode', user)}
@@ -209,7 +294,7 @@ export default function Checkout({navigation, route}) {
               style={{
                 color: colors.black,
                 fontSize: windowWidth / 18,
-                fontFamily: fonts.secondary[400],
+                fontFamily: fonts.secondary[600],
               }}>
               Rp. {new Intl.NumberFormat().format(item.total)}
             </Text>
@@ -236,7 +321,7 @@ export default function Checkout({navigation, route}) {
               style={{
                 color: colors.black,
                 fontSize: windowWidth / 18,
-                fontFamily: fonts.secondary[400],
+                fontFamily: fonts.secondary[600],
               }}>
               Rp. {new Intl.NumberFormat().format(kirim.ongkir)}
             </Text>
@@ -263,9 +348,9 @@ export default function Checkout({navigation, route}) {
               style={{
                 color: colors.black,
                 fontSize: windowWidth / 18,
-                fontFamily: fonts.secondary[400],
+                fontFamily: fonts.secondary[600],
               }}>
-              Rp. {new Intl.NumberFormat().format(item.total + kirim.ongkir)}
+              Rp. {new Intl.NumberFormat().format(kirim.total + kirim.ongkir)}
             </Text>
           </View>
         </View>

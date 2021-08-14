@@ -124,6 +124,35 @@ export default function Account({navigation, route}) {
                 <Icon type="ionicon" name="chevron-forward-outline" />
               </View>
             </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ListData')}
+              style={{
+                marginVertical: 5,
+                padding: 10,
+                borderRadius: 10,
+                backgroundColor: colors.success,
+                flexDirection: 'row',
+              }}>
+              <View style={{flex: 1}}>
+                <Text
+                  style={{
+                    fontFamily: fonts.secondary[600],
+                    color: colors.white,
+                  }}>
+                  Transaksi
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: fonts.secondary[400],
+                    color: colors.white,
+                  }}>
+                  Informasi Transaksi Anda
+                </Text>
+              </View>
+              <View>
+                <Icon type="ionicon" name="chevron-forward-outline" />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -132,7 +161,7 @@ export default function Account({navigation, route}) {
           <MyButton
             onPress={btnKeluar}
             title="Keluar"
-            warna={colors.secondary}
+            warna={colors.warning}
             Icons="log-out-outline"
           />
         </View>

@@ -34,6 +34,7 @@ import BarangDiskon from './BarangDiskon';
 import BarangNew from './BarangNew';
 import Metode from './Metode';
 import Kredit from './Kredit';
+import Tenor from './Tenor';
 
 export {
   Wishlist,
@@ -72,4 +73,5 @@ export {
   AlamatTambah,
   BarangDiskon,
   BarangNew,
+  Tenor,
 };

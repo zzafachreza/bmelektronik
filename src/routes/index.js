@@ -45,6 +45,7 @@ import {
   BarangNew,
   Metode,
   Kredit,
+  Tenor,
 } from '../pages';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {BottomNavigator} from '../components';
@@ -424,6 +425,33 @@ export default function Router() {
         component={Kredit}
         options={({route, navigation}) => ({
           title: 'Kartu Kredit BM Elektronik',
+          headerTintColor: 'white',
+          headerStyle: {
+            backgroundColor: colors.primary,
+            elevation: 0, // remove shadow on Android
+          },
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateX: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.width, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
+        })}
+      />
+
+      <Stack.Screen
+        name="Tenor"
+        component={Tenor}
+        options={({route, navigation}) => ({
+          title: 'CICILAN BM ELEKTRONIK',
           headerTintColor: 'white',
           headerStyle: {
             backgroundColor: colors.primary,

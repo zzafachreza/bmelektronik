@@ -12,6 +12,7 @@ import axios from 'axios';
 import {fonts, windowWidth} from '../../utils/fonts';
 import {colors} from '../../utils/colors';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import {MyButton} from '../../components';
 
 export default function ListDetail({navigation, route}) {
   const item = route.params;
@@ -231,15 +232,78 @@ export default function ListDetail({navigation, route}) {
           padding: 20,
           backgroundColor: colors.white,
         }}>
-        <Text
-          style={{
-            fontFamily: fonts.secondary[600],
-            fontSize: windowWidth / 15,
-            color: colors.warning,
-          }}>
-          Rp. {item.total}
-        </Text>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text
+            style={{
+              flex: 1,
+              fontFamily: fonts.secondary.normal,
+              fontSize: windowWidth / 30,
+              color: colors.black,
+            }}>
+            Subtotal untuk Produk:
+          </Text>
+          <Text
+            style={{
+              fontFamily: fonts.secondary[600],
+              fontSize: windowWidth / 20,
+              color: colors.black,
+            }}>
+            Rp. {item.total}
+          </Text>
+        </View>
+
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text
+            style={{
+              flex: 1,
+              fontFamily: fonts.secondary.normal,
+              fontSize: windowWidth / 30,
+              color: colors.black,
+            }}>
+            Subtotal Pengiriman:
+          </Text>
+          <Text
+            style={{
+              fontFamily: fonts.secondary[600],
+              fontSize: windowWidth / 20,
+              color: colors.black,
+            }}>
+            Rp. {item.ongkir}
+          </Text>
+        </View>
+
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text
+            style={{
+              flex: 1,
+              fontFamily: fonts.secondary.normal,
+              fontSize: windowWidth / 30,
+              color: colors.black,
+            }}>
+            Total Pembayaran:
+          </Text>
+          <Text
+            style={{
+              fontFamily: fonts.secondary[600],
+              fontSize: windowWidth / 15,
+              color: colors.black,
+            }}>
+            Rp. {item.grand}
+          </Text>
+        </View>
       </View>
+      {item.bayar == 'KREDIT' ? (
+        <View style={{padding: 10}}>
+          <MyButton
+            Icons="bookmarks-outline"
+            onPress={() => navigation.navigate('Tenor', item)}
+            title={`DETAIL CICILAN SELAMA ${item.tenor} BULAN`}
+            warna={colors.primary}
+          />
+        </View>
+      ) : (
+        <View></View>
+      )}
     </SafeAreaView>
   );
 }

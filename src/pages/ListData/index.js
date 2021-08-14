@@ -73,6 +73,12 @@ export default function ListData({navigation}) {
           flex: 1,
         }}>
         {data.map(item => {
+          let tenor = '';
+
+          if (item.bayar == 'KREDIT') {
+            tenor = 'CICILAN ' + item.tenor + ' BULAN';
+          }
+
           return (
             <View
               key={item.id}
@@ -127,17 +133,21 @@ export default function ListData({navigation}) {
                       justifyContent: 'flex-start',
                       alignItems: 'flex-start',
                     }}>
-                    {item.status === 'SELESAI' && (
-                      <Text
-                        style={{
-                          fontFamily: fonts.secondary[600],
-                          fontSize: windowWidth / 20,
-                          color: colors.success,
-                          padding: 10,
-                        }}>
-                        {item.point} Point
-                      </Text>
-                    )}
+                    <Text
+                      style={{
+                        fontFamily: fonts.secondary[600],
+                        fontSize: windowWidth / 25,
+                        color: colors.white,
+                        padding: 5,
+                        borderRadius: 5,
+                        margin: 5,
+                        backgroundColor:
+                          item.bayar == 'KREDIT'
+                            ? colors.black
+                            : colors.success,
+                      }}>
+                      {item.bayar} {tenor}
+                    </Text>
                   </View>
                   <View
                     style={{
@@ -153,7 +163,7 @@ export default function ListData({navigation}) {
                         color: colors.warning,
                         padding: 10,
                       }}>
-                      Rp. {item.total}
+                      Rp. {item.grand}
                     </Text>
                   </View>
                 </View>
