@@ -352,10 +352,10 @@ export default function Metode({navigation}) {
               style={{
                 color: colors.black,
                 left: 10,
-                fontSize: windowWidth / 22,
+                fontSize: windowWidth / 25,
                 fontFamily: fonts.secondary[400],
               }}>
-              Tambahkan Kartu Kredit BM Elektronik {kredit.nama_pendaftar}
+              Tambahkan Kartu Kredit BM Elektronik
             </Text>
           </TouchableOpacity>
         </View>

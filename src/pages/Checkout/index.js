@@ -36,18 +36,6 @@ export default function Checkout({navigation, route}) {
     // setLoading(true);
     console.log('kirim ke server', kirim);
     navigation.navigate('Bayar', kirim);
-
-    if (user.bayar === 'KREDIT') {
-      axios
-        .post('https://zavalabs.com/bmelektronik/api/transaksi_add.php', kirim)
-        .then(res => {
-          console.log(res);
-          setLoading(false);
-        });
-      navigation.replace('Success2');
-    } else {
-      navigation.navigate('Bayar', kirim);
-    }
   };
 
   const getUser = () => {

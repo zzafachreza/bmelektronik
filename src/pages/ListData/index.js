@@ -136,7 +136,7 @@ export default function ListData({navigation}) {
                     <Text
                       style={{
                         fontFamily: fonts.secondary[600],
-                        fontSize: windowWidth / 25,
+                        fontSize: windowWidth / 30,
                         color: colors.white,
                         padding: 5,
                         borderRadius: 5,

@@ -15,7 +15,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {MyButton, MyInput, MyGap, MyPicker} from '../../components';
 import {colors} from '../../utils/colors';
 import {TouchableOpacity, Swipeable} from 'react-native-gesture-handler';
-import {fonts} from '../../utils/fonts';
+import {fonts, windowWidth} from '../../utils/fonts';
 import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {Icon} from 'react-native-elements';
@@ -28,12 +28,14 @@ import {showMessage} from 'react-native-flash-message';
 export default function Bayar({navigation, route}) {
   const [data, setData] = useState(route.params);
 
+  navigation.setOptions({
+    title: 'Pebayaran Angsuran ke ' + route.params.angsuran,
+  });
+
   console.log('data dari bayar', data);
   const [loading, setLoading] = useState(false);
   console.log('pembayaran', data);
-  const [foto1, setfoto1] = useState(
-    'https://ayokulakan.com/img/no-images.png',
-  );
+  const [foto1, setfoto1] = useState('https://zavalabs.com/nogambar.jpg');
 
   const options = {
     includeBase64: true,
@@ -93,7 +95,7 @@ export default function Bayar({navigation, route}) {
           marginVertical: 10,
           borderWidth: 1,
           borderRadius: 10,
-          borderColor: colors.border,
+          borderColor: colors.black,
           elevation: 2,
         }}>
         <Text
@@ -137,7 +139,7 @@ export default function Bayar({navigation, route}) {
             <MyButton
               onPress={onPress2}
               title="GALLERY"
-              warna={colors.secondary}
+              warna={colors.warning}
             />
           </View>
         </View>
@@ -150,17 +152,16 @@ export default function Bayar({navigation, route}) {
     console.log('kirim ke server', data);
     setTimeout(() => {
       axios
-        .post('https://zavalabs.com/bmelektronik/api/transaksi_add2.php', data)
+        .post('https://zavalabs.com/bmelektronik/api/kredit_bayar.php', data)
         .then(res => {
           console.log(res);
           setLoading(false);
+          navigation.goBack();
+          showMessage({
+            type: 'success',
+            message: 'Transaksi Berhasil, Terima kasih',
+          });
         });
-
-      navigation.replace('MainApp');
-      showMessage({
-        type: 'success',
-        message: 'Transaksi Berhasil, Terima kasih',
-      });
     }, 1200);
   };
   return (
@@ -170,7 +171,7 @@ export default function Bayar({navigation, route}) {
           padding: 10,
           flex: 1,
         }}>
-        <View style={{flex: 1, justifyContent: 'center'}}>
+        <View style={{flex: 1}}>
           <View
             style={{
               borderBottomWidth: 1,
@@ -180,13 +181,40 @@ export default function Bayar({navigation, route}) {
             }}>
             <Text
               style={{
-                color: colors.secondary,
-                fontSize: 25,
+                color: colors.black,
+                fontSize: windowWidth / 15,
                 fontFamily: fonts.secondary[600],
                 padding: 10,
               }}>
               Total Transaksi
             </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+              }}>
+              <View style={{flex: 1}}>
+                <Text
+                  style={{
+                    color: colors.black,
+                    fontSize: windowWidth / 30,
+                    fontFamily: fonts.secondary[400],
+                    padding: 10,
+                  }}>
+                  Tanggal Jatuh Tempo
+                </Text>
+              </View>
+              <View>
+                <Text
+                  style={{
+                    color: colors.success,
+                    fontSize: windowWidth / 30,
+                    fontFamily: fonts.secondary[600],
+                    padding: 10,
+                  }}>
+                  {route.params.jatuh_tempo}
+                </Text>
+              </View>
+            </View>
           </View>
           <View
             style={{
@@ -198,13 +226,19 @@ export default function Bayar({navigation, route}) {
             <Text
               style={{
                 color: colors.primary,
-                fontSize: 25,
+                fontSize: windowWidth / 13,
                 fontFamily: fonts.secondary[600],
                 padding: 10,
               }}>
               Rp. {new Intl.NumberFormat().format(route.params.total)}
             </Text>
           </View>
+          <UploadFoto
+            onPress1={() => getCamera(1)}
+            onPress2={() => getGallery(1)}
+            label="Upload Bukti Pembayaran"
+            foto={foto1}
+          />
         </View>
 
         <View>

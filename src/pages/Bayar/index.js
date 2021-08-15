@@ -27,6 +27,7 @@ import {showMessage} from 'react-native-flash-message';
 
 export default function Bayar({navigation, route}) {
   const [data, setData] = useState(route.params);
+  const [perbulan, setPerbulan] = useState(0);
 
   console.log('data dari bayar', data);
   const [loading, setLoading] = useState(false);
@@ -156,6 +157,32 @@ export default function Bayar({navigation, route}) {
       navigation.navigate('Success2');
     }, 1200);
   };
+
+  useEffect(() => {
+    if (data.bayar == 'KREDIT') {
+      navigation.setOptions({
+        title: 'Pembayaran Kredit',
+      });
+
+      if (data.tenor == 12) {
+        setPerbulan(Math.round((data.total + (data.total * 36) / 100) / 12));
+        setData({
+          ...data,
+          perbulan: Math.round((data.total + (data.total * 36) / 100) / 12),
+        });
+      } else {
+        setPerbulan(Math.round((data.total + (data.total * 30) / 100) / 10));
+        setData({
+          ...data,
+          perbulan: Math.round((data.total + (data.total * 30) / 100) / 10),
+        });
+      }
+    } else {
+      navigation.setOptions({
+        title: 'Pembayaran Transfer',
+      });
+    }
+  }, []);
   return (
     <>
       <SafeAreaView
@@ -265,6 +292,37 @@ export default function Bayar({navigation, route}) {
               )}
             </Text>
           </View>
+
+          {data.bayar == 'KREDIT' ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                borderBottomWidth: 1,
+                borderBottomColor: colors.border,
+              }}>
+              <Text
+                style={{
+                  flex: 1,
+                  color: colors.black,
+                  fontSize: 16,
+                  fontFamily: fonts.secondary[400],
+                  padding: 10,
+                }}>
+                Angsuran Selama {data.tenor} Bulan
+              </Text>
+              <Text
+                style={{
+                  color: colors.primary,
+                  fontSize: 20,
+                  fontFamily: fonts.secondary[600],
+                  padding: 10,
+                }}>
+                Rp. {new Intl.NumberFormat().format(perbulan)}
+              </Text>
+            </View>
+          ) : (
+            <View></View>
+          )}
 
           <UploadFoto
             onPress1={() => getCamera(1)}

@@ -52,6 +52,7 @@ export default function Success2({navigation, route}) {
           style={{
             fontFamily: fonts.secondary[400],
             fontSize: windowWidth / 25,
+            marginHorizontal: 20,
             textAlign: 'center',
           }}>
           Pesanan Anda akan segera dikirimkan. Terima kasih telah memilih
