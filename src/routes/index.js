@@ -50,6 +50,7 @@ import {
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {BottomNavigator} from '../components';
 import {colors} from '../utils/colors';
+import KategoriAll from '../pages/KategoriAll';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -507,6 +508,34 @@ export default function Router() {
         options={({route, navigation}) => ({
           title: 'Detail Pembantu',
           headerTintColor: 'white',
+          headerStyle: {
+            backgroundColor: colors.primary,
+            elevation: 0, // remove shadow on Android
+          },
+          cardStyleInterpolator: ({current, layouts}) => {
+            return {
+              cardStyle: {
+                transform: [
+                  {
+                    translateX: current.progress.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [layouts.screen.width, 0],
+                    }),
+                  },
+                ],
+              },
+            };
+          },
+        })}
+      />
+
+      <Stack.Screen
+        name="KategoriAll"
+        component={KategoriAll}
+        options={({route, navigation}) => ({
+          title: 'Kategori All',
+          headerTintColor: 'white',
+          headerShown: false,
           headerStyle: {
             backgroundColor: colors.primary,
             elevation: 0, // remove shadow on Android

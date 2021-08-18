@@ -39,6 +39,18 @@ export default function Alamat({navigation, route}) {
       });
   };
 
+  const hapus = x => {
+    axios
+      .post('https://zavalabs.com/bmelektronik/api/alamat_hapus.php', {
+        id: route.params.id,
+        id_alamat: x,
+      })
+      .then(res => {
+        console.log('data alamat', res);
+        setData(res.data);
+      });
+  };
+
   useEffect(() => {
     if (isFocused) {
       getDataAlamat();
@@ -84,10 +96,10 @@ export default function Alamat({navigation, route}) {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <TouchableOpacity style={{padding: 10}}>
+                  {/* <TouchableOpacity onPress={hapus} style={{padding: 10}}>
                     <Icon
                       type="ionicon"
-                      name="create-outline"
+                      name="trash-outline"
                       color={colors.primary}
                     />
                     <Text
@@ -95,9 +107,9 @@ export default function Alamat({navigation, route}) {
                         fontFamily: fonts.secondary[600],
                         color: colors.primary,
                       }}>
-                      Ubah
+                      Hapus
                     </Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
               </View>
               <TouchableOpacity

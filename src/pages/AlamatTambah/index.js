@@ -83,7 +83,6 @@ export default function AlamatTambah({navigation, route}) {
         <MyInput
           label="Wilayah / Provinsi / daerah"
           iconname="map"
-          keyboardType="number-pad"
           value={data.provinsi}
           onChangeText={value =>
             setData({

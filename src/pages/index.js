@@ -35,6 +35,7 @@ import BarangNew from './BarangNew';
 import Metode from './Metode';
 import Kredit from './Kredit';
 import Tenor from './Tenor';
+import KategoriAll from './KategoriAll';
 
 export {
   Wishlist,

@@ -81,7 +81,7 @@ export default function GetStarted({navigation}) {
       <MyButton
         borderSize={1}
         borderColor={colors.white}
-        title="LOGIN"
+        title="MASUK"
         Icons="log-in"
         warna={colors.primary}
         onPress={() => navigation.navigate('Login')}
@@ -89,7 +89,7 @@ export default function GetStarted({navigation}) {
 
       <MyGap jarak={20} />
       <MyButton
-        title="REGISTER"
+        title="DAFTAR"
         Icons="book"
         warna={colors.white}
         iconColor={colors.primary}
