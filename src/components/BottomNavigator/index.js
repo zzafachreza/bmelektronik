@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,14 +8,35 @@ import {
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import {colors} from '../../utils/colors';
+import {getData, storeData} from '../../utils/localStorage';
+import {useIsFocused} from '@react-navigation/native';
+import {fonts} from '../../utils/fonts';
 
 export default function BottomNavigator({state, descriptors, navigation}) {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
+
+  const isFocused = useIsFocused();
+
   if (focusedOptions.tabBarVisible === false) {
     return null;
   }
+
+  const [cart, setCart] = useState(0);
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    if (isFocused) {
+      getData('user').then(res => {
+        console.log('data user', res);
+        setUser(res);
+      });
+      getData('cart').then(res => {
+        console.log('cart pada bottom', res);
+        setCart('cart', res);
+      });
+    }
+  }, [isFocused]);
 
   return (
     <View style={{flexDirection: 'row', backgroundColor: 'white'}}>
@@ -92,11 +113,9 @@ export default function BottomNavigator({state, descriptors, navigation}) {
                 style={{
                   position: 'relative',
                   backgroundColor: 'white',
-                  // borderTopWidth: iconName === 'cart' && isFocused ? 5 : 0,
+                  borderTopWidth: 0,
                   borderWidth: 3,
-                  // borderColor: 'red',
-                  // padding: 10,
-                  // position: 'absolute',
+
                   position: 'relative',
                   borderColor: 'white',
                   borderRadius: 0,
@@ -107,14 +126,23 @@ export default function BottomNavigator({state, descriptors, navigation}) {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Icon
-                  name={iconName}
-                  type={iconType}
-                  size={windowWidth / 20}
-                  color={isFocused ? colors.primary : '#919095'}
-                />
+                {iconName == 'cart-outline' ? (
+                  <Icon
+                    name={iconName}
+                    type={iconType}
+                    size={windowWidth / 20}
+                    color={isFocused ? colors.warning : colors.success}
+                  />
+                ) : (
+                  <Icon
+                    name={iconName}
+                    type={iconType}
+                    size={windowWidth / 20}
+                    color={isFocused ? colors.primary : '#919095'}
+                  />
+                )}
 
-                {/* <Text
+                <Text
                   style={{
                     fontSize: windowWidth / 45,
                     color:
@@ -125,9 +153,7 @@ export default function BottomNavigator({state, descriptors, navigation}) {
                         : isFocused
                         ? colors.primary
                         : '#919095',
-                  }}>
-                  {label == 'ListRedeem' ? 'Redeem' : label}
-                </Text> */}
+                  }}></Text>
               </View>
             </View>
           </TouchableOpacity>

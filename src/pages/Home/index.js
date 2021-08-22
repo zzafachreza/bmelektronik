@@ -24,11 +24,14 @@ import 'intl';
 import 'intl/locale-data/jsonp/en';
 import MyProductNew from '../../components/MyProductNew';
 import MyProductDiscount from '../../components/MyProductDiscount';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function Home({navigation}) {
+  const isFocused = useIsFocused();
   const [user, setUser] = useState([]);
   const [token, setToken] = useState('');
   const [point, setPoint] = useState(0);
+  const [cart, setCart] = useState(0);
 
   messaging().onMessage(async remoteMessage => {
     // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
@@ -63,34 +66,41 @@ export default function Home({navigation}) {
   });
 
   useEffect(() => {
-    getData('user').then(res => {
-      console.log(res);
-      setUser(res);
+    if (isFocused) {
+      getData('user').then(res => {
+        console.log(res);
+        setUser(res);
+
+        axios
+          .post('https://zavalabs.com/bmelektronik/api/point.php', {
+            id_member: res.id,
+          })
+          .then(respoint => {
+            setPoint(respoint.data);
+            console.log('get apoint', respoint.data);
+          });
+
+        getData('token').then(res => {
+          console.log('data token,', res);
+          setToken(res.token);
+        });
+      });
 
       axios
-        .post('https://zavalabs.com/bmelektronik/api/point.php', {
-          id_member: res.id,
+        .post('https://zavalabs.com/bmelektronik/api/update_token.php', {
+          id_member: user.id,
+          token: token,
         })
-        .then(respoint => {
-          setPoint(respoint.data);
-          console.log('get apoint', respoint.data);
+        .then(res => {
+          console.log('update token', res);
         });
+    }
 
-      getData('token').then(res => {
-        console.log('data token,', res);
-        setToken(res.token);
-      });
+    getData('cart').then(res => {
+      console.log(res);
+      setCart(res);
     });
-
-    axios
-      .post('https://zavalabs.com/bmelektronik/api/update_token.php', {
-        id_member: user.id,
-        token: token,
-      })
-      .then(res => {
-        console.log('update token', res);
-      });
-  }, []);
+  }, [isFocused]);
 
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
@@ -197,6 +207,29 @@ export default function Home({navigation}) {
                 color={colors.white}
                 size={windowWidth / 12}
               />
+              {cart > 0 && (
+                <View
+                  style={{
+                    width: 25,
+                    // height: 15,
+                    borderRadius: 5,
+                    backgroundColor: colors.success,
+                    position: 'absolute',
+                    right: 0,
+                    top: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: fonts.secondary[600],
+                      color: colors.white,
+                      fontSize: windowWidth / 35,
+                    }}>
+                    {cart}
+                  </Text>
+                </View>
+              )}
             </TouchableOpacity>
           </View>
         </View>

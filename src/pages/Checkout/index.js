@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import LottieView from 'lottie-react-native';
-import {getData} from '../../utils/localStorage';
+import {getData, storeData} from '../../utils/localStorage';
 import axios from 'axios';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {MyButton, MyInput, MyGap, MyPicker} from '../../components';
@@ -36,11 +36,19 @@ export default function Checkout({navigation, route}) {
     // setLoading(true);
     console.log('kirim ke server', kirim);
     navigation.navigate('Bayar', kirim);
+    storeData('cart', 0);
   };
 
   const getUser = () => {
     getData('user').then(res => {
       setUser(res);
+
+      if (res.bayar == 'KREDIT' && kirim.total <= 1000000) {
+        alert(
+          'Barang yang bisa kredit hanya di atas 1.000.000. silahkan  melakukan transfer bank',
+        );
+      }
+
       setKirim({
         ...kirim,
         ongkir: 15000,
@@ -343,14 +351,28 @@ export default function Checkout({navigation, route}) {
           </View>
         </View>
         <View style={{padding: 10}}>
-          <MyButton
-            onPress={simpan}
-            title="BUAT PESANAN"
-            warna={colors.primary}
-            style={{
-              justifyContent: 'flex-end',
-            }}
-          />
+          {user.bayar == 'KREDIT' && kirim.total <= 1000000 ? (
+            <View style={{padding: 10}}>
+              <Text
+                style={{
+                  fontFamily: fonts.secondary[600],
+                  textAlign: 'center',
+                  color: colors.primary,
+                }}>
+                Barang yang bisa kredit hanya di atas 1.000.000. silahkan
+                melakukan transfer bank.
+              </Text>
+            </View>
+          ) : (
+            <MyButton
+              onPress={simpan}
+              title="BUAT PESANAN"
+              warna={colors.primary}
+              style={{
+                justifyContent: 'flex-end',
+              }}
+            />
+          )}
         </View>
       </SafeAreaView>
       {loading && (

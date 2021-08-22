@@ -20,6 +20,7 @@ import {showMessage} from 'react-native-flash-message';
 
 export default function MyProductDiscount() {
   const [user, setUser] = useState({});
+  const [liked, setLiked] = useState([]);
 
   useEffect(() => {
     getData('user').then(res => {
@@ -34,33 +35,12 @@ export default function MyProductDiscount() {
       });
   }, []);
 
-  const addFav = item => {
-    const kirim = {
-      id_member: user.id,
-      id_barang: item.id,
-      nama_barang: item.nama_barang,
-      qty: 1,
-      uom: item.uom,
-      harga: item.harga,
-      total: item.harga,
-      foto: item.foto,
-    };
-    console.log('kirim ke server', kirim);
-    axios
-      .post('https://zavalabs.com/bmelektronik/api/fav_add.php', kirim)
-      .then(res => {
-        console.log(res);
-        showMessage({
-          type: 'success',
-          message: 'Berhasil Di Favoritkan',
-        });
-      });
-  };
+  const addFav = item => {};
 
   const navigation = useNavigation();
   const [data, setData] = useState([]);
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item, index}) => {
     return (
       <TouchableOpacity
         style={styles.card}
@@ -72,22 +52,88 @@ export default function MyProductDiscount() {
             uri: item.foto,
           }}
         />
-        <View
-          style={{
-            // flex: 1,
-            justifyContent: 'flex-end',
-            alignItems: 'flex-end',
-            padding: 10,
-            // backgroundColor: 'blue',
-          }}>
-          <TouchableOpacity onPress={() => addFav(item)}>
-            <Icon
-              type="ionicon"
-              name="heart"
-              size={windowWidth / 15}
-              color={colors.primary}
-            />
-          </TouchableOpacity>
+        <View style={{flexDirection: 'row'}}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              padding: 10,
+              flexDirection: 'row',
+            }}>
+            {item.stok > 0 && (
+              <Text
+                style={{
+                  backgroundColor: colors.success,
+                  borderRadius: 5,
+                  color: colors.white,
+                  paddingHorizontal: 5,
+                }}>
+                Tersisa {item.stok}
+              </Text>
+            )}
+            {item.stok == 0 && (
+              <Text
+                style={{
+                  backgroundColor: colors.primary,
+                  borderRadius: 5,
+                  color: colors.white,
+                  paddingHorizontal: 5,
+                }}>
+                Habis
+              </Text>
+            )}
+          </View>
+          <View
+            style={{
+              padding: 10,
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                console.log(liked);
+                if (liked.includes(index)) {
+                  let unlike = liked.filter(elem => elem !== index);
+                  setLiked(unlike);
+                  axios
+                    .post(
+                      'https://zavalabs.com/bmelektronik/api/fav_delete_barang.php',
+                      {
+                        id: item.id,
+                        id_member: user.id,
+                      },
+                    )
+                    .then(res => {
+                      console.log('delete', res);
+                    });
+                } else {
+                  setLiked([...liked, index]);
+                  const kirim = {
+                    id_member: user.id,
+                    id_barang: item.id,
+                    nama_barang: item.nama_barang,
+                    qty: 1,
+                    uom: item.uom,
+                    harga: item.harga,
+                    total: item.harga,
+                    foto: item.foto,
+                  };
+
+                  axios
+                    .post(
+                      'https://zavalabs.com/bmelektronik/api/fav_add.php',
+                      kirim,
+                    )
+                    .then(res => {});
+                }
+              }}>
+              <Icon
+                type="ionicon"
+                name={liked.includes(index) ? 'heart' : 'heart-outline'}
+                size={windowWidth / 15}
+                color={colors.primary}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         <View
           style={{
@@ -165,16 +211,13 @@ export default function MyProductDiscount() {
                 style={{
                   flex: 1,
                   padding: 10,
-                }}>
-                <Text style={styles.subTitle}>{item.nama_kategori}</Text>
-              </View>
+                }}></View>
             )}
           </View>
         </View>
       </TouchableOpacity>
     );
   };
-
   return (
     <View>
       <View

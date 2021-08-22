@@ -16,21 +16,34 @@ import 'intl/locale-data/jsonp/en';
 import {Icon} from 'react-native-elements/dist/icons/Icon';
 import {Modalize} from 'react-native-modalize';
 import {showMessage} from 'react-native-flash-message';
-import {getData} from '../../utils/localStorage';
+import {getData, storeData} from '../../utils/localStorage';
 import axios from 'axios';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function Barang({navigation, route}) {
   const item = route.params;
+  navigation.setOptions({
+    headerShown: false,
+  });
+
+  const isFocused = useIsFocused();
 
   const [jumlah, setJumlah] = useState(1);
   const [user, setUser] = useState({});
+  const [cart, setCart] = useState(0);
 
   useEffect(() => {
-    getData('user').then(res => {
-      console.log('data user', res);
-      setUser(res);
-    });
-  }, []);
+    if (isFocused) {
+      getData('user').then(res => {
+        console.log('data user', res);
+        setUser(res);
+      });
+      getData('cart').then(res => {
+        console.log(res);
+        setCart(res);
+      });
+    }
+  }, [isFocused]);
 
   const modalizeRef = useRef();
 
@@ -57,6 +70,8 @@ export default function Barang({navigation, route}) {
         // navigation.navigate('Success2', {
         //   message: 'Berhasil Tambah Keranjang',
         // });
+        setCart(cart + res.data);
+        storeData('cart', cart + res.data);
         showMessage({
           type: 'success',
           message: 'Berhasil Masuk Keranjang',
@@ -73,6 +88,70 @@ export default function Barang({navigation, route}) {
       }}>
       <View
         style={{
+          height: 50,
+          // padding: 10,
+          paddingRight: 10,
+          backgroundColor: colors.primary,
+
+          flexDirection: 'row',
+        }}>
+        <View style={{justifyContent: 'center'}}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{
+              padding: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Icon type="ionicon" name="arrow-back" color={colors.white} />
+          </TouchableOpacity>
+        </View>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text
+            style={{
+              fontFamily: fonts.secondary[600],
+              fontSize: windowWidth / 20,
+              color: colors.white,
+            }}>
+            {item.nama_barang}
+          </Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Cart')}
+          style={{
+            padding: 10,
+            position: 'relative',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Icon type="ionicon" name="cart-outline" color={colors.white} />
+          {cart > 0 && (
+            <View
+              style={{
+                width: 20,
+                // height: 15,
+                borderRadius: 5,
+                backgroundColor: colors.success,
+                position: 'absolute',
+                right: 0,
+                top: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: fonts.secondary[600],
+                  color: colors.white,
+                  fontSize: windowWidth / 35,
+                }}>
+                {cart}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
+      <View
+        style={{
           flex: 1,
         }}>
         <Image
@@ -85,6 +164,39 @@ export default function Barang({navigation, route}) {
             uri: item.foto,
           }}
         />
+        <View style={{padding: 10}}>
+          {item.stok > 0 && (
+            <Text
+              style={{
+                alignSelf: 'flex-end',
+                textAlign: 'center',
+                backgroundColor: colors.success,
+                borderRadius: 5,
+                color: colors.white,
+                padding: 10,
+                width: 120,
+                fontFamily: fonts.secondary[600],
+              }}>
+              Tersisa {item.stok}
+            </Text>
+          )}
+
+          {item.stok == 0 && (
+            <Text
+              style={{
+                alignSelf: 'flex-end',
+                textAlign: 'center',
+                backgroundColor: colors.primary,
+                borderRadius: 5,
+                color: colors.white,
+                padding: 10,
+                width: 120,
+                fontFamily: fonts.secondary[600],
+              }}>
+              Habis
+            </Text>
+          )}
+        </View>
         <View
           style={{
             backgroundColor: colors.white,
@@ -153,15 +265,24 @@ export default function Barang({navigation, route}) {
           </View>
         </View>
       </View>
+      {item.stok > 0 && (
+        <MyButton
+          fontWeight="bold"
+          radius={0}
+          title="TAMBAH KERANJANG"
+          warna={colors.warning}
+          onPress={onOpen}
+        />
+      )}
 
-      <MyButton
-        fontWeight="bold"
-        radius={0}
-        title="TAMBAH KERANJANG"
-        warna={colors.warning}
-        onPress={onOpen}
-      />
-
+      {item.stok == 0 && (
+        <MyButton
+          fontWeight="bold"
+          radius={0}
+          title="MAAF PRODUK HABIS"
+          warna={colors.border}
+        />
+      )}
       <Modalize
         withHandle={false}
         scrollViewProps={{showsVerticalScrollIndicator: false}}

@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 
-import {getData} from '../../utils/localStorage';
+import {getData, storeData} from '../../utils/localStorage';
 import axios from 'axios';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {MyButton} from '../../components';
@@ -25,6 +25,7 @@ export default function Cart({navigation, route}) {
   const [user, setUser] = useState({});
   const [data, setData] = useState([]);
   const isFocused = useIsFocused();
+  const [cart, setCart] = useState(0);
   //   useEffect(() => {
 
   //   }, []);
@@ -36,6 +37,11 @@ export default function Cart({navigation, route}) {
         console.log(res);
         setUser(res);
         __getDataBarang(res.id);
+      });
+
+      getData('cart').then(res => {
+        console.log(res);
+        setCart(res);
       });
     }
   }, [isFocused]);
@@ -62,6 +68,9 @@ export default function Cart({navigation, route}) {
         console.log('delete', res);
         __getDataBarang(id_member);
       });
+
+    setCart(cart - 1);
+    storeData('cart', cart - 1);
   };
 
   var sub = 0;
