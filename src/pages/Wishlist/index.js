@@ -151,16 +151,33 @@ export default function Wishlist({navigation, route}) {
               </Text>
             </View>
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <TouchableOpacity onPress={() => addToCart(item)}>
-                <Icon type="ionicon" name="cart" color={colors.success} />
-                <Text
+              {item.stok > 0 ? (
+                <TouchableOpacity onPress={() => addToCart(item)}>
+                  <Icon type="ionicon" name="cart" color={colors.success} />
+                  <Text
+                    style={{
+                      color: colors.success,
+                      fontFamily: fonts.secondary[600],
+                    }}>
+                    Tambah
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <View
                   style={{
-                    color: colors.success,
-                    fontFamily: fonts.secondary[600],
+                    backgroundColor: colors.primary,
+                    padding: 5,
+                    borderRadius: 10,
                   }}>
-                  Tambah
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontFamily: fonts.secondary[600],
+                      color: colors.white,
+                    }}>
+                    Stok Habis
+                  </Text>
+                </View>
+              )}
             </View>
           </View>
         </View>

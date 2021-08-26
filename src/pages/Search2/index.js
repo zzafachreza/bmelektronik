@@ -21,10 +21,12 @@ import {fonts, windowWidth} from '../../utils/fonts';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 import {Modalize} from 'react-native-modalize';
+import {getData} from '../../utils/localStorage';
 
 export default function Search2({navigation, route}) {
   const modalizeRef = useRef();
   const [liked, setLiked] = useState([]);
+  const [user, setUser] = useState([]);
 
   const onOpen = () => {
     modalizeRef.current?.open();
@@ -70,6 +72,10 @@ export default function Search2({navigation, route}) {
 
   useEffect(() => {
     getFilter(item.nama_kategori, filter);
+
+    getData('user').then(res => {
+      setUser(res);
+    });
 
     axios
       .post('https://zavalabs.com/bmelektronik/api/sub_kategori.php', {
