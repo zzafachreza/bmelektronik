@@ -274,10 +274,10 @@ export default function MyProductNew() {
               left: 10,
               fontSize: windowWidth / 12,
             }}>
-            PRODUK DISKON
+            PRODUK TERBARU
           </Text>
 
-          <TouchableOpacity onPress={() => navigation.navigate('BarangDiskon')}>
+          <TouchableOpacity onPress={() => navigation.navigate('BarangNew')}>
             <Text
               style={{
                 fontFamily: fonts.secondary[400],

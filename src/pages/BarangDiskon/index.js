@@ -20,24 +20,38 @@ import LottieView from 'lottie-react-native';
 import {fonts, windowWidth} from '../../utils/fonts';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
+import {getData} from '../../utils/localStorage';
+import {useIsFocused} from '@react-navigation/native';
 
 export default function BarangDiskon({navigation, route}) {
+  const isFocused = useIsFocused();
+
   const [key, setKey] = useState('');
   const [cari, setCari] = useState(false);
   const [liked, setLiked] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({});
 
   const [data, setData] = useState([]);
+  const getDataBarang = () => {
+    getData('user').then(res => {
+      setUser(res);
+      axios
+        .post('https://zavalabs.com/bmelektronik/api/barang_diskon.php', {
+          id_member: res.id,
+        })
+        .then(res => {
+          console.log('barang diskon', res.data);
+          setData(res.data);
+        });
+    });
+  };
 
   useEffect(() => {
-    axios
-      .post('https://zavalabs.com/bmelektronik/api/barang_diskon.php')
-      .then(res => {
-        console.log('hasil cari', res.data);
-        setData(res.data);
-        // setData(res.data.data);
-      });
-  }, []);
+    if (isFocused) {
+      getDataBarang();
+    }
+  }, [isFocused]);
 
   const renderItem = ({item, index}) => {
     return (
@@ -51,6 +65,7 @@ export default function BarangDiskon({navigation, route}) {
             uri: item.foto,
           }}
         />
+
         <View style={{flexDirection: 'row'}}>
           <View
             style={{
@@ -87,10 +102,9 @@ export default function BarangDiskon({navigation, route}) {
             style={{
               padding: 10,
             }}>
-            <TouchableOpacity
-              onPress={() => {
-                console.log(liked);
-                if (liked.includes(index)) {
+            {item.favorit > 0 ? (
+              <TouchableOpacity
+                onPress={() => {
                   let unlike = liked.filter(elem => elem !== index);
                   setLiked(unlike);
                   axios
@@ -103,35 +117,63 @@ export default function BarangDiskon({navigation, route}) {
                     )
                     .then(res => {
                       console.log('delete', res);
+                      getDataBarang();
                     });
-                } else {
-                  setLiked([...liked, index]);
-                  const kirim = {
-                    id_member: user.id,
-                    id_barang: item.id,
-                    nama_barang: item.nama_barang,
-                    qty: 1,
-                    uom: item.uom,
-                    harga: item.harga,
-                    total: item.harga,
-                    foto: item.foto,
-                  };
+                }}>
+                <Icon
+                  type="ionicon"
+                  name={liked.includes(index) ? 'heart' : 'heart'}
+                  size={windowWidth / 15}
+                  color={colors.primary}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={() => {
+                  console.log(liked);
+                  if (liked.includes(index)) {
+                    let unlike = liked.filter(elem => elem !== index);
+                    setLiked(unlike);
+                    axios
+                      .post(
+                        'https://zavalabs.com/bmelektronik/api/fav_delete_barang.php',
+                        {
+                          id: item.id,
+                          id_member: user.id,
+                        },
+                      )
+                      .then(res => {
+                        console.log('delete', res);
+                      });
+                  } else {
+                    setLiked([...liked, index]);
+                    const kirim = {
+                      id_member: user.id,
+                      id_barang: item.id,
+                      nama_barang: item.nama_barang,
+                      qty: 1,
+                      uom: item.uom,
+                      harga: item.harga,
+                      total: item.harga,
+                      foto: item.foto,
+                    };
 
-                  axios
-                    .post(
-                      'https://zavalabs.com/bmelektronik/api/fav_add.php',
-                      kirim,
-                    )
-                    .then(res => {});
-                }
-              }}>
-              <Icon
-                type="ionicon"
-                name={liked.includes(index) ? 'heart' : 'heart-outline'}
-                size={windowWidth / 15}
-                color={colors.primary}
-              />
-            </TouchableOpacity>
+                    axios
+                      .post(
+                        'https://zavalabs.com/bmelektronik/api/fav_add.php',
+                        kirim,
+                      )
+                      .then(res => {});
+                  }
+                }}>
+                <Icon
+                  type="ionicon"
+                  name={liked.includes(index) ? 'heart' : 'heart-outline'}
+                  size={windowWidth / 15}
+                  color={colors.primary}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         <View
